@@ -1,21 +1,14 @@
 complete <- function(directory, id = 1:332) {
-  
-  len <- length(id)
-  cnt <- 1
-  x <- numeric(len)
-  y <- numeric(len)
+  nb <- numeric(0)
   for(i in id) {
-    if(i >=1 && i <=9) {
-      j<- paste("00",i,sep = "")
-    } else if (i >=10 && i <= 99) {
-      j<- paste("0",i,sep = "")
-    }
-    f <- paste(file.path(directory,j),"csv",sep = ".")
-    a <- read.csv(f)
-    x[cnt] <- i
-    y[cnt] <- nrow(na.omit(a))
-    cnt <- cnt + 1
+    filename <- getfile(i,directory)
+    filedata <- read.csv(filename)
+    nb <- c(nb,nrow(na.omit(filedata)))
   }
-  data <- data.frame(id=x, nobs=y)
-  data
+  data.frame(id=id, nobs=nb)
+}
+
+getfile <- function(id,directory) {
+  f<-paste(directory,"/",sprintf("%03d",id),".csv",sep = "")
+  return(f)
 }
